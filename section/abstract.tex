@@ -1,0 +1,32 @@
+\begin{abstract}
+	% Context
+	LargeRDFBench is one of the most comprehensive benchmarks for evaluating federated SPARQL
+	query engines, combining a large collection of real, interlinked datasets with a rich query
+	suite that has made it a reference point for the community.
+	Its value rests on the same
+	promise as RDF itself: data published under shared specifications can be exchanged and
+	queried by any conformant tool.
+	% Need
+	As the benchmark continues to be widely adopted and the range of conformant engines grows,
+	the interoperability of its artifacts becomes ever more important. Several of its data dumps
+	diverge from strict specification conformance, and its expected query results are distributed
+	in an ad-hoc format -- which can prevent standards-compliant engines from loading the data
+	and make results difficult to verify automatically.
+	% Task
+	We systematically identify and categorize these data-quality issues and repair them,
+	producing standards-conformant serializations of every affected dataset, and we re-encode the
+	benchmark's expected results in the W3C SPARQL Results JSON format.
+	% Object
+	We contribute a polished, standards-compliant edition of LargeRDFBench, produced by a
+	reproducible cleaning pipeline, together with its expected query results in a standard,
+	machine-verifiable format.
+	% Findings
+	Every dataset now parses under strict, specification-compliant RDF parsers and the expected
+	results are machine-verifiable through a standard format, extending the benchmark's reach to
+	the full range of conformant engines while preserving its original content.
+	% Conclusion
+	This work strengthens an already valuable community resource: by aligning its artifacts with
+	the very specifications the systems under test are expected to honor, we broaden the set of
+	engines that can be fairly and reproducibly compared, and reaffirm standards compliance as a
+	foundation for trustworthy benchmarking.
+\end{abstract}
