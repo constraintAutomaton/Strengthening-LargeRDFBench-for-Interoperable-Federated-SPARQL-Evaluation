@@ -11,18 +11,25 @@
 \usepackage{listings}
 \lstset{breaklines=true}
 
+%% Tables
+\usepackage{booktabs}
+
+%% Acronyms
+\usepackage{acro}
+\input{acronyms}
+
 \begin{document}
 
 %%
 %% Rights management information.
 \copyrightyear{2026}
 \copyrightclause{Copyright for this paper by its authors.
-  Use permitted under Creative Commons License Attribution 4.0 International (CC BY 4.0).}
+	Use permitted under Creative Commons License Attribution 4.0 International (CC BY 4.0).}
 
 %%
 %% Conference information.
 \conference{DMKG 2026: 2nd International Workshop on Data Management for Knowledge Graphs,
-  October 25--26, 2026, co-located with ISWC 2026, Bari, Italy}
+	October 25--26, 2026, co-located with ISWC 2026, Bari, Italy}
 
 %%
 %% Title.
@@ -31,13 +38,13 @@
 %%
 %% Authors and affiliations.
 \author[1]{Bryan-Elliott Tam}[%
-  orcid=0000-0000-0000-0000,
-  email=bryanelliott.tam@ugent.be,
+	orcid=0000-0003-3467-9755,
+	email=bryanelliott.tam@ugent.be,
 ]
 \cormark[1]
 \author[1]{Ruben Taelman}[%
-  orcid=0000-0003-3658-9095,
-  email=ruben.taelman@ugent.be,
+	orcid=0000-0001-5118-256X,
+	email=ruben.taelman@ugent.be,
 ]
 \address[1]{Department of Electronics and Information Systems, Ghent University -- imec}
 
@@ -48,16 +55,15 @@
 \input{section/abstract}
 
 \begin{keywords}
-  Linked Data \sep
-  RDF \sep
-  Benchmark
+	Linked Data \sep
+	RDF \sep
+	Benchmark
 \end{keywords}
 
 \maketitle
 
 \input{section/introduction}
 \input{section/related_work}
-\input{section/preliminaries}
 \input{section/method}
 \input{section/experiment}
 \input{section/results}
@@ -65,10 +71,7 @@
 
 %%
 %% Acknowledgments.
-\begin{acknowledgments}
-  This research was supported by \ldots
-\end{acknowledgments}
-
+\input{section/acknowledgments}
 %%
 %% Declaration on Generative AI.
 \input{section/ai_declaration}
@@ -76,10 +79,5 @@
 %%
 %% Bibliography.
 \bibliography{references}
-
-%%
-%% Appendix.
-\appendix
-\input{section/annexe}
 
 \end{document}
