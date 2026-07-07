@@ -1,8 +1,8 @@
 \section{Introduction}
 \label{sec:introduction}
 
-Answering real questions over the Web of data frequently requires combining facts that reside in separate, independently published datasets~\cite{hogan2021knowledge}.
-In the life sciences, for instance, a single question may link a drug in DrugBank to the pathways it participates in from KEGG and the chemical entities that characterise it in ChEBI, while a general-knowledge question may join an entity in DBpedia with its geographic context in GeoNames and its coverage in the New York Times.
+Answering difficult questions over the Web of data frequently requires combining facts that reside in separate, independently published datasets.
+In the life sciences, for instance, a single question may link a drug in DrugBank to the pathways it participates in from KEGG and the chemical entities that characterise it in ChEBI, while a general-knowledge question may join an entity in DBpedia with its geographic context in GeoNames.
 Federated query processing serves precisely this need, evaluating a single SPARQL query across multiple autonomous endpoints at once and integrating their data at query time rather than consolidating it into a central repository~\cite{schwarte2011fedx}.
 In practice, replicating every relevant dataset into a single store is often untenable, because the sources sit behind separate administrative boundaries, carry incompatible licences~\cite{Moreau2021}, and can be too voluminous to copy~\cite{lubiana2025split}.
 These pressures are acute in the life sciences, where federation has become a standard way to query across data while leaving it in place~\cite{hasnain2017biofed}.

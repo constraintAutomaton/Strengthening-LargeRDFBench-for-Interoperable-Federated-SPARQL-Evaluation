@@ -1,6 +1,38 @@
-\section{Method}
+\section{Modernization Process}
 \label{sec:method}
 
-\input{section/fix_summary}
+We develop a pipeline that transforms the datasets of LargeRDFBench into an interoperable edition.
+The pipeline is open source\footnote{\url{https://github.com/shape-federated-queries/large-rdf-bench-modernization}} and fully reproducible, using GNU~make\footnote{\url{https://www.gnu.org/software/make/}} as its orchestrator.
+It first downloads the original datasets, then cleans each with software we developed, which also records the repairs it applies as per-dataset statistics in CSV form.
+We then use \ac{SOP}~\cite{Champin2026} to confirm that every cleaned dataset is syntactically valid.
+Next, we re-encode the benchmark's expected results as SPARQL Results JSON with an open-source tool we built for LargeRDFBench\footnote{\url{https://github.com/shape-federated-queries/large_rdf_bench_result_json_format}}, applying to them the same repairs as to the datasets so the two stay aligned.
+We also verify that each cleaned dataset preserves the triple count of its original and that each converted result set preserves its number of solutions, emitting a CSV report of this check.
+We then convert each dataset into \ac{HDT}~\cite{FERNANDEZ201322}, a compressed RDF format, and run simple \texttt{ASK} queries over it with the Comunica SPARQL engine~\cite{taelman_iswc_resources_comunica_2018}, which parses only valid RDF and so gives an engine-level check that the data loads.
+The pipeline thus yields three artefacts, the standards-conformant datasets, their \ac{HDT} counterparts, and the expected results in SPARQL Results JSON.
 
-TODO.
+
+\subsection{Taxonomy of the Repairs}
+
+We group the standards violations we found into three classes according to the part of the \ac{RDF} syntax they breach, and repair each with a deterministic, reproducible pipeline.\footnote{%
+	The pipeline additionally applies two repairs for tooling compatibility rather than standards conformance.
+	It replaces NUL bytes with spaces, which HDT's \texttt{rdf2hdt}~\cite{hdtcpp} cannot ingest, and converts single-quoted RDF/XML attributes to double quotes, which some parsers reject.
+	Both are omitted from Table~\ref{tab:fixes}.}
+We illustrate each repair below with a representative example, while Table~\ref{tab:fixes} records how often each fired across the benchmark's datasets.
+
+\input{table/fix_summary}
+
+The first class concerns \acp{IRI} that violate the \ac{IRI} syntax of RFC~3987~\cite{ietf3987IRI}, which builds on the URI generic syntax of RFC~3986~\cite{ietf3986URI}.
+Characters that an \ac{IRI} may not contain, such as spaces, control characters and brackets, are percent-encoded; for example, \texttt{ATFIP1[V]} becomes \texttt{ATFIP1\%5BV\%5D}.
+A colon in the authority\footnote{The authority as defined by the \emph{Uniform Resource Identifier (URI): Generic Syntax} specification~\cite{ietf3986URI}.} that is not followed by a decimal port is encoded to \texttt{\%3A}, since RFC~3986 permits only digits there.
+A term written without a scheme is made absolute against the dataset's base \ac{IRI}; for instance, \texttt{<bio2rdf\_dataset:\ldots>} becomes \texttt{<http://bio2rdf\_dataset\%3A\ldots>}.
+Leading and trailing spaces are stripped.
+
+The second class concerns string literals that a strict parser rejects.
+A literal broken across physical lines is rejoined with the breaks escaped as \texttt{\textbackslash n}, since a quoted literal may not contain a raw newline in either N-Triples~\cite{w3NTriples} or Turtle~\cite{w3Turtle}; a value spanning three lines, for example, becomes \texttt{"line one\textbackslash nline two\textbackslash nline three"}.
+Both serializations also require every document to be encoded in UTF-8~\cite{w3NTriples,w3Turtle}, so a value that UTF-8 cannot express cannot appear in a conformant file.
+A character too large for a single UTF-16 code unit is represented as a surrogate pair, and some literals carry such a character as its two surrogate halves rather than as the character itself.
+Because UTF-8 cannot encode surrogates and requires them to be decoded to their character number first~\cite{ietf3629UTF8}, we recombine the halves; the pair \texttt{\textbackslash uD835\textbackslash uDFB1}, for example, becomes the single character U+1D7B1.
+A bare alphabetic object, which Turtle reads as the start of a prefixed name~\cite{w3Turtle}, is quoted; for example, \texttt{t:chromosome X} becomes \texttt{t:chromosome "X"}.
+
+The third class concerns language tags that do not conform to BCP~47~\cite{ietf5646BCP47}.
+Such a tag is reduced to its primary language subtag; the malformed \texttt{fr\_1793}, for example, becomes \texttt{fr}.
