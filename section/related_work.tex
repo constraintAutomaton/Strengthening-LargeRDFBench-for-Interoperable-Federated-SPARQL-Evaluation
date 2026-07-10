@@ -1,4 +1,12 @@
 \section{Related Work}
 \label{sec:related_work}
 
-TODO.
+The quality of published \ac{RDF} has been studied in the literature.
+Surveys organise it into taxonomies of quality dimensions, among them syntactic validity~\cite{Zaveri2015}.
+Large-scale empirical studies have measured how far published data deviates from these standards and catalogued the errors that recur~\cite{Hogan2010WeavingTP,hogan2012empirical}.
+Tooling addresses such conformance defects at different stages.
+At authoring time, a language server validates syntax as a document is written and flags mistakes before publication~\cite{Vercruysse2025}.
+At ingestion time, LOD Laundromat republishes cleaned copies of existing datasets, though it conforms by exclusion, keeping only documents whose source URL parses under RFC~3986~\cite{ietf3986URI, Beek2014}.
+A separate concern is link integrity, addressed by maintenance and graph-repair work that mends broken or dangling references~\cite{regino2021link}, acting on what \acp{IRI} resolve to rather than on their form.
+That problem is orthogonal to ours, since a triple can be well-formed yet point to a dead resource, and we repair the form without touching what it resolves to.
+Furthermore, in SPARQL benchmarking, neither the meaning of the triples nor the dereferencing of their \acp{IRI} affects the query results.
