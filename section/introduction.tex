@@ -20,9 +20,9 @@ Interoperable data also lets the benchmark be embedded in automated processes su
 LargeRDFBench~\cite{saleem2018largerdfbench}, which extends the earlier FedBench~\cite{schmidt2011fedbench} suite, is a widely used benchmark for SPARQL endpoint federation.
 It provides 13 real datasets, most of them interlinked, together with 32 queries and their expected results.
 Several of these datasets, however, deviate from the \ac{RDF} standard, so an engine that parses \ac{RDF} strictly cannot ingest them.
-This is not a flaw for client-side evaluation, since the data need only be loaded once into a hosting engine, and a lenient one will accept it and serve standard results through the SPARQL protocol, leaving the federation engine under test unaffected.
+This is not a flaw for client-side evaluation, since the data need only be loaded once into a hosting engine, and a lenient one will accept it and serve standard results through the SPARQL protocol, leaving the federation engine (client) under test unaffected.
 It nonetheless narrows the set of engines able to host the benchmark and rules out any that parse \ac{RDF} strictly, undermining interoperability.
-The expected results compound the problem, since they are published in a custom format that must be parsed with bespoke tooling, even though standard result formats already exist~\cite{sparql11resultsjson,sparqlresultsxml,sparql11resultscsvtsv}.
+The expected results compound the problem, since they are published in a custom format that must be parsed with custom toolings, even though standard result formats already exist~\cite{sparql11resultsjson,sparqlresultsxml,sparql11resultscsvtsv}.
 
 In this paper, we identify and categorise these standards violations and repair them with a reproducible pipeline, producing a standards-conformant edition of LargeRDFBench whose datasets all load under a strict \ac{RDF} parser and whose expected results are re-encoded in a standard format.
 We further show that the modernised benchmark still runs end-to-end in a federated engine, using it to compare \texttt{ASK}- and \texttt{COUNT}-based source selection in FedX, a comparison not previously explored.
