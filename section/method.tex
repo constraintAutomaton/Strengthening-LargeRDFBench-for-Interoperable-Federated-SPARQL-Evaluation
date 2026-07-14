@@ -2,10 +2,10 @@
 \label{sec:method}
 
 We develop a pipeline that transforms the datasets of LargeRDFBench into an interoperable edition.
-The pipeline is open source\footnote{\url{https://github.com/shape-federated-queries/large-rdf-bench-modernization}} and fully reproducible, using GNU~make\footnote{\url{https://www.gnu.org/software/make/}} as its orchestrator.
-It first downloads the original datasets, then cleans each with software we developed, which also records the repairs it applies as per-dataset statistics in CSV form.
+The pipeline is open source\footnote{\url{https://github.com/shape-federated-queries/large-rdf-bench-modernization}}\rt{Am I correct to assume that this will be moved to the original LargeRDFBench repo? If so, make sure to open a PR asap, so Saleem has sufficient time to review.} and fully reproducible, using GNU~make\footnote{\url{https://www.gnu.org/software/make/}} as its orchestrator.
+It first downloads the original datasets, then cleans each with software we developed, which also records the repairs it applies as per-dataset statistics in CSV form.\rt{What format are the cleaned dataset represented in? N-Triples?}
 We then use \ac{SOP}~\cite{Champin2026} to confirm that every cleaned dataset is syntactically valid.
-Next, we re-encode the benchmark's expected results as SPARQL Results JSON with an open-source tool we built for LargeRDFBench\footnote{\url{https://github.com/shape-federated-queries/large_rdf_bench_result_json_format}}, applying to them the same repairs as to the datasets so the two stay aligned.
+Next, we re-encode the benchmark's expected results as SPARQL Results JSON with an open-source tool we built for LargeRDFBench\footnote{\url{https://github.com/shape-federated-queries/large_rdf_bench_result_json_format}}\rt{Will this repo also be included in the original largerdfbench repo? If not, can you move it to the KNoWS github org?}, applying to them the same repairs as to the datasets so the two stay aligned.
 We also verify that each cleaned dataset preserves the triple count of its original and that each converted result set preserves its number of solutions, emitting a CSV report of this check.
 We then convert each dataset into \ac{HDT}~\cite{FERNANDEZ201322}, a compressed RDF format, and run simple \texttt{ASK} queries over it with the Comunica SPARQL engine~\cite{taelman_iswc_resources_comunica_2018}, which parses only valid RDF and so gives an engine-level check that the data loads.
 The pipeline thus yields three artifacts, the standards-conformant datasets, their \ac{HDT} counterparts, and the expected results in SPARQL Results JSON.
