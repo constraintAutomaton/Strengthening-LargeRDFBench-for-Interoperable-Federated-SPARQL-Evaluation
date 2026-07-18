@@ -7,6 +7,13 @@ It first downloads the original datasets, then cleans them with software we deve
 We then use \ac{SOP}~\cite{Champin2026} to convert the cleaned RDF/XML datasets to N-Triples, which facilitates validation, and to confirm that every cleaned dataset is syntactically valid.
 Next, we re-encode the benchmark's expected results as SPARQL Results JSON with an open-source tool we built for LargeRDFBench\footnote{\url{https://github.com/shape-federated-queries/large_rdf_bench_result_json_format}}, applying to them the same repairs as to the datasets so the two stay aligned.
 We also drop the original results' unbound placeholder---an unbound \texttt{OPTIONAL} variable recorded as the literal \texttt{'null'}, which a standards-compliant engine never returns---leaving the variable unbound instead.\footnote{This placeholder occurs 1{,}598 times across four queries (S14, C7, C8, C10).}
+% TODO(char-encoding): the original expected results replace several undecodable
+% non-ASCII characters (alpha, beta, degree sign, superscript-3, en-dash) with
+% runs of '?', while our pipeline renders the same positions as U+FFFD. Once the
+% clean run gives the full, correct comparison, decide the normalization (e.g.
+% rewrite the original's '?'-corruption to the standard U+FFFD so implementers get
+% clean reference results, vs. normalizing in the validator) and document it here
+% with the affected-solution count. Affects S14 and S8 at least.
 We also verify that each cleaned dataset preserves the triple count of its original and that each converted result set preserves its number of solutions, emitting a CSV report of this check.
 We then convert each dataset into \ac{HDT}~\cite{FERNANDEZ201322}, a compressed RDF format, and run simple \texttt{ASK} queries over it with the Comunica SPARQL engine~\cite{taelman_iswc_resources_comunica_2018}, which parses only valid RDF and so gives an engine-level check that the data loads.
 The pipeline thus yields three artifacts, the standards-conformant datasets, their \ac{HDT} counterparts, and the expected results in SPARQL Results JSON.
