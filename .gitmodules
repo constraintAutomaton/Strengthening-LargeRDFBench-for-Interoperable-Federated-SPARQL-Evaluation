@@ -1,0 +1,3 @@
+[submodule "analysis"]
+	path = analysis
+	url = git@github.com:shape-federated-queries/large-rdf-bench-result-analysis.git
