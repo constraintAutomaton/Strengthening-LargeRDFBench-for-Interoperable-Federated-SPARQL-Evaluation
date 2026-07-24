@@ -2,27 +2,35 @@
 \label{sec:introduction}
 
 Answering difficult questions over the Web of data frequently requires combining facts that reside in separate, independently published datasets.
-In the life sciences, for instance, a single question may link a drug in DrugBank to the pathways it participates in from KEGG and the chemical entities that characterise it in ChEBI, while a general-knowledge question may join an entity in DBpedia with its geographic context in GeoNames.
-Federated query processing serves precisely this need, evaluating a single SPARQL query across multiple autonomous endpoints at once and integrating their data at query time rather than consolidating it into a central repository~\cite{schwarte2011fedx}.
-In practice, replicating every relevant dataset into a single store is often untenable, because the sources sit behind separate administrative boundaries, carry incompatible licences~\cite{Moreau2021}, and can be too voluminous to copy~\cite{lubiana2025split}.
-These pressures are acute in the life sciences, where federation has become a standard way to query across data while leaving it in place~\cite{hasnain2017biofed}.
+In the life sciences, for instance, a single question may link a drug in DrugBank to the pathways it participates in from KEGG and the chemical entities that characterize it in ChEBI, while a general-knowledge question may join an entity in DBpedia with its geographic context in GeoNames.
+Federated query processing serves precisely this need, by evaluating a single SPARQL query across multiple endpoints at once and integrating their data at query time without centralization~\cite{schwarte2011fedx}.
+In practice, replicating every relevant dataset into a single store is often untenable, because the sources sit behind separate administrative boundaries, carry incompatible licenses~\cite{Moreau2021}, and can be too voluminous to copy~\cite{lubiana2025split}.
 
+Reproducibility is a long-standing concern across the sciences~\cite{baker2016reproducibility}, and computer science is no exception~\cite{collberg2016repeatability}.
 Benchmarking is an essential part of developing and comparing SPARQL engines and federation algorithms.
-Benchmarks are standardised and reproducible scenarios that capture either realistic workloads or interesting choke points in query processing.
+Benchmarks are standardized and reproducible scenarios that capture either realistic workloads or interesting choke points in query processing.
 For a benchmark to serve as a basis for comparison, it must be usable by a variety of independent implementations, a property we call the interoperability of the benchmark.
-Since \ac{RDF} was itself devised to make data interoperable across independently built systems~\cite{Decker2000}, a benchmark expressed in \ac{RDF} has every reason to abide by the very standards it presupposes.
+A benchmark can only underwrite reproducible comparison if independent implementations can actually ingest and run it.
+
+The quality of published \ac{RDF} is a studied concern: surveys organize it into taxonomies of quality dimensions, among them syntactic validity~\cite{Zaveri2015}, and large-scale empirical studies have measured how far published data deviates from the standards and cataloged the recurring errors~\cite{Hogan2010WeavingTP,hogan2012empirical}.
+Existing tooling addresses such defects at authoring time, where a language server flags syntax mistakes before publication~\cite{Vercruysse2025}, or at ingestion time, where LOD Laundromat republishes cleaned copies of existing datasets -- but by exclusion, keeping only documents whose source URL parses under RFC~3986~\cite{ietf3986URI, Beek2014}.
+%Link-integrity maintenance, which mends broken or dangling references~\cite{regino2021link}, is orthogonal: it acts on what \acp{IRI} resolve to rather than on their form, and in SPARQL benchmarking neither the meaning of triples nor the dereferencing of their \acp{IRI} affects query results.
 
 This matters especially for a federated benchmark, whose datasets are distributed across multiple endpoints that may each run a different engine.
 Such experiments usually compare client-side federation engines, yet the same datasets could equally be used to compare the server-side engines that host them.
 In either case, every hosting engine must be able to ingest the benchmark's data, which requires that data to be interoperable.
 Interoperable data also lets the benchmark be embedded in automated processes such as \ac{CI} pipelines that track an engine's performance over time.
 
-LargeRDFBench~\cite{saleem2018largerdfbench}, which extends the earlier FedBench~\cite{schmidt2011fedbench} suite, is a widely used benchmark for SPARQL endpoint federation.\rt{If it's too hard too include FedShop in related work, you could also briefly mention it here somewhere instead.}
-It provides 13 real datasets, most of them interlinked, together with 32 queries and their expected results.
+LargeRDFBench~\cite{saleem2018largerdfbench}, which extends the earlier FedBench~\cite{schmidt2011fedbench} suite, is a widely used benchmark for SPARQL endpoint federation.
+More recent benchmarks such as FedShop~\cite{dang2023fedshop} instead generate synthetic sources to stress-test how federation engines scale with the number of endpoints, a concern orthogonal to the standards-conformance of real, published data that we address here.
+LargeRDFBench provides 13 real datasets, most of them interlinked, together with 32 queries and their expected results.
 Several of these datasets, however, deviate from the \ac{RDF} standard, so an engine that parses \ac{RDF} strictly cannot ingest them.
 This is not a flaw for client-side evaluation, since the data need only be loaded once into a hosting engine, and a lenient one will accept it and serve standard results through the SPARQL protocol, leaving the federation engine (client) under test unaffected.
 It nonetheless narrows the set of engines able to host the benchmark and rules out any that parse \ac{RDF} strictly, undermining interoperability.
-The expected results compound the problem, since they are published in a custom format that must be parsed with custom toolings, even though standard result formats already exist~\cite{sparql11resultsjson,sparqlresultsxml,sparql11resultscsvtsv}.
+The expected results compound the problem, since they are published in a custom format that must be parsed with custom tooling, even though standard result formats already exist~\cite{sparql11resultsjson}.
+They also contain discrepancies with respect to the source datasets, introduced by the tooling that produced them.
 
-In this paper, we identify and categorise these standards violations and repair them with a reproducible pipeline, producing a standards-conformant edition of LargeRDFBench whose datasets all load under a strict \ac{RDF} parser and whose expected results are re-encoded in a standard format.
-We further show that the modernised benchmark still runs end-to-end in a federated engine, using it to compare \texttt{ASK}- and \texttt{COUNT}-based source selection in FedX\rt{Comunica?}, a comparison not previously explored.
+In this paper, we identify and categorize these standards violations and repair them with a reproducible pipeline, producing a standards-conformant edition of LargeRDFBench whose datasets all load under a strict \ac{RDF} parser and whose expected results are re-encoded in a standard format.
+Running the modernized benchmark end-to-end in a federated engine, we validate the expected results against the source datasets and correct their discrepancies, backing each correction with a reproducible verification script.
+We take a first step by comparing \texttt{ASK}- and \texttt{COUNT}-based source selection in the FedX algorithm~\cite{schwarte2011fedx}, as implemented in the Comunica query engine~\cite{taelman_iswc_resources_comunica_2018}, over endpoints hosted by QLever~\cite{bast2017qlever}, a comparison not previously explored.
+Since SPARQL endpoints are known to implement \texttt{ASK} and \texttt{COUNT} differently, this preliminary evaluation raises, without settling, the question of how the hosting engine shapes federated performance, a server-side view of federation that current benchmarking largely overlooks and that the interoperable benchmark now makes possible to pursue.

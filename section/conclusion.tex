@@ -1,4 +1,9 @@
 \section{Conclusion}
 \label{sec:conclusion}
 
-TODO.
+Scientific reproducibility is a cornerstone of benchmarking, yet it holds only if a benchmark can be run by every conformant implementation.
+Several of LargeRDFBench's datasets deviate from the \ac{RDF} standard and its expected results are distributed in an ad hoc format, so we repaired both with a deterministic, reproducible pipeline that yields standards-conformant datasets, their \ac{HDT} counterparts, and the expected results in the W3C SPARQL 1.1 Query Results JSON Format --- validated end-to-end in a federated engine, correcting encoding discrepancies in the reference along the way.
+
+Because every conformant engine can now host the data, the edition supports reproducible cross-engine comparison.
+Our comparison of \texttt{ASK}- and \texttt{COUNT}-based source selection opens a new direction: the strategy's cost varies widely across queries and depends on how the hosting engine evaluates \texttt{ASK} and \texttt{COUNT} --- a real-world constraint on federation that current benchmarking practice overlooks.
+We leave a systematic multi-engine evaluation to future work.

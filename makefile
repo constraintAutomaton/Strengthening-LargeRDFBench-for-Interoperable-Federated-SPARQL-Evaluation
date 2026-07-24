@@ -1,4 +1,5 @@
-SOURCE = main.tex references.bib section/*.tex makefile figure/*
+SOURCE = main.tex references.bib section/*.tex table/*.tex makefile figure/* \
+         analysis/result-analysis-script/artefact/**/*
 
 .PHONY: clean watch
 

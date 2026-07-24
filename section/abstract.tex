@@ -4,23 +4,25 @@
 	query engines, combining a large collection of real, interlinked datasets with a rich query
 	suite that has made it a reference point for the community.
 	% Need
-	As the benchmark continues to be widely adopted and the range of conformant engines grows, the interoperability of its artifacts becomes ever more important.
-	Several of its data dumps diverge from strict specification conformance, and its expected query results are distributed
-	in an ad-hoc format -- which can prevent standards-compliant engines from loading the data
-	and make results difficult to verify automatically.
+	As the benchmark continues to be widely adopted and the range of conformant engines grows, the interoperability of its artifacts, and thus the reproducibility of comparisons across engines, becomes ever more important.
+	Yet several of its data dumps violate the RDF specifications, and its expected query results are distributed in an ad hoc format and contain discrepancies with respect to the source datasets.
 	% Task
 	We systematically identify and categorize these data-quality issues and repair them,
-	producing standards-conformant serializations of every affected dataset, and we re-encode the
-	benchmark's expected results in the W3C SPARQL Results JSON format.
+	producing standards-conformant serializations of every affected dataset; we re-encode the
+	benchmark's expected results in the W3C SPARQL 1.1 Query Results JSON Format and correct
+	their discrepancies.
 	% Object
-	We contribute a polished, standards-compliant edition of LargeRDFBench, produced by a
+	We contribute a standards-compliant edition of LargeRDFBench, produced by a
 	reproducible cleaning pipeline, together with its expected query results in a standard,
 	machine-verifiable format.
 	% Findings
-	Every dataset now parses under strict, specification-compliant RDF parsers and the expected
+	Every dataset now parses under strict, specification-compliant RDF parsers, and the expected
 	results are machine-verifiable through a standard format, extending the benchmark's reach to
-	the full range of conformant engines while preserving its original content.
+	the full range of conformant engines while staying faithful to the original data.
+	Running the modernized benchmark end-to-end, we validate and correct its expected results,
+	and perform a preliminary comparison, not previously explored, of \texttt{ASK}- and
+	\texttt{COUNT}-based source selection in the FedX algorithm.
 	% Conclusion
 	This work strengthens an already valuable community resource by aligning its artifacts with the RDF standards.
-	In doing so, we broaden the set of engines that can be fairly and reproducibly compared, and we reaffirm standards compliance as a foundation for trustworthy benchmarking.
+	In doing so, we broaden the set of engines that can be fairly and reproducibly compared, and open the question of how the server-side SPARQL engines that host the data influence algorithmic choices and, through them, federated query performance.
 \end{abstract}
