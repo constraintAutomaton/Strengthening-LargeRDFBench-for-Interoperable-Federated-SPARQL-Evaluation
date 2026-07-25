@@ -13,14 +13,15 @@ We ran the experiment on 14 machines, one for each of the 13 endpoints and one c
 Every endpoint is served by QLever~\cite{bast2017qlever}, and the client evaluates the full query suite with the FedX algorithm as implemented in Comunica~\cite{taelman_iswc_resources_comunica_2018}, under both its \texttt{ASK}- and \texttt{COUNT}-based source selection.
 Each machine has the same specification: two hexa-core Intel Xeon E5645 (2.4\,GHz) CPUs, 24\,GB of RAM, and Ubuntu 20.04 LTS 64-bit.
 
-We corrected the pervasive defect of the original expected results, character corruption where accented characters were recorded as \texttt{?} or the replacement character U+FFFD, which we verified against the source data.
+We corrected a pervasive defect in the original expected results, accented characters recorded as \texttt{?} or the replacement character U+FFFD, verified against the source data.
 With this correction applied, every query our engine answers matches the expected results, except three: S7, C8 and C7.
 For S7, the triple pattern binding \texttt{"California"} is answered by both NYT and GeoNames; the original results appear to join these into one solution, whereas the FedQPL definition prescribes a union of solution mappings when two sources answer the same triple pattern~\cite{cheng2020fedqpl}, hence the two solutions our engine returns.
 For C8, the source data contains the author label both with and without a trailing space (\texttt{"Eyal Oren "} and \texttt{"Eyal Oren"}), so our engine returns both where the original results kept only the trimmed form.
 For C7, the difference comes from the hosting engine, not the answer set: QLever canonicalizes numeric literals, casting \texttt{xsd:float} and \texttt{xsd:double} to \texttt{xsd:decimal}.
-Since SPARQL evaluates over RDF terms and the dataset asserts the coordinate under both types, the two are distinct solutions; QLever collapses them into a single value absent from the data, returning fewer results than the term-based semantics prescribe.
+SPARQL evaluates over RDF terms, and the dataset asserts the coordinate under both \texttt{xsd:float} and \texttt{xsd:double}, whose use in RDF is itself a documented source of data-quality problems~\cite{keil2022floating}.
+The two are therefore distinct solutions, yet QLever collapses them into a single value absent from the data, returning fewer results than the term-based semantics prescribe.
 Losing valid solutions this way bears directly on interoperability and reproducibility, as the same benchmark then returns different answers across engines.
-A proof file for each case is provided in the analysis repository.\footnote{\url{https://github.com/shape-federated-queries/large-rdf-bench-result-analysis}}
+A proof file for each case is provided in the analysis repository.~\footnote{\url{https://github.com/shape-federated-queries/large-rdf-bench-result-analysis}}
 
 Comparing the two source-selection strategies, \texttt{ASK} is faster on the median (Table~\ref{tab:qlever-ask-count-adhoc}), but only in aggregate: the per-query \texttt{ASK}/\texttt{COUNT} execution ratio ranges from 0.15 to 124, so on some queries \texttt{ASK} is instead orders of magnitude slower.
 This wide spread makes the strategy, and its interaction with the hosting engine, worth investigating, though beyond this paper's scope.
