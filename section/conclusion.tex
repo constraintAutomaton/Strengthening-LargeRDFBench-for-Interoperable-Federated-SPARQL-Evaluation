@@ -6,5 +6,6 @@ Several of LargeRDFBench's datasets deviate from the \ac{RDF} standard and its e
 We also validated end-to-end in a federated engine, correcting encoding discrepancies in the reference along the way.
 
 Because every conformant engine can now host the data, the edition supports reproducible cross-engine comparison.
-Our comparison of \texttt{ASK}- and \texttt{COUNT}-based source selection opens a new direction: the strategy's cost varies widely across queries and depends on how the hosting engine evaluates \texttt{ASK} and \texttt{COUNT} --- a real-world constraint on federation that current benchmarking practice overlooks.
+Our validation shows, however, that this reproducibility depends on the engine serving the data and not only on the client-side algorithm under test.
+Our comparison of \texttt{ASK}- and \texttt{COUNT}-based source selection opens a further direction, as the strategy's cost varies significantly across queries and depends on how the hosting engine evaluates \texttt{ASK} and \texttt{COUNT}, a real-world constraint on federation that current benchmarking practice overlooks.
 We leave a systematic multi-engine evaluation to future work.

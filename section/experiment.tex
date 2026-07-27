@@ -2,7 +2,6 @@
 \label{sec:experiment}
 
 The primary purpose of this experiment is to validate the integrity of the modernized benchmark.\footnote{The experiment is reproducible and open source: \url{https://github.com/shape-federated-queries/ask-count-fedx-large-rdf-bench}}
-
 We then illustrate the kind of investigation the now standards-conformant, interoperable benchmark makes possible.
 As an example, we compare the \texttt{ASK}- and \texttt{COUNT}-based source-selection strategies of the FedX algorithm~\cite{schwarte2011fedx}.
 The \texttt{COUNT} variant replaces FedX's \texttt{ASK} probes with \texttt{COUNT} queries, so that source selection simultaneously discovers cardinality information useful for query planning.
@@ -22,7 +21,7 @@ The two are therefore distinct solutions, yet QLever collapses them into a singl
 Losing valid solutions this way bears directly on interoperability and reproducibility, as the same benchmark then returns different answers across engines.
 A proof file for each case is provided in the analysis repository.~\footnote{\url{https://github.com/shape-federated-queries/large-rdf-bench-result-analysis}}
 
-Comparing the two source-selection strategies, \texttt{ASK} is faster on the median (Table~\ref{tab:qlever-ask-count-adhoc}), but only in aggregate: the per-query \texttt{ASK}/\texttt{COUNT} execution ratio ranges from 0.15 to 124, so on some queries \texttt{ASK} is instead orders of magnitude slower.
+Comparing the two source-selection strategies, \texttt{ASK} is faster on the median (Table~\ref{tab:qlever-ask-count-adhoc}), but only in aggregate: the per-query \texttt{ASK}/\texttt{COUNT} execution ratio ranges from 0.15 to 123.62, so on some queries \texttt{ASK} is instead orders of magnitude slower.
 This wide spread makes the strategy, and its interaction with the hosting engine, worth investigating, though beyond this paper's scope.
 
 \input{analysis/result-analysis-script/artefact/overview_adhoc/table_qlever_ask_count_adhoc}
