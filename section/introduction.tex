@@ -9,11 +9,13 @@ In practice, replicating every relevant dataset into a single store is often unt
 Reproducibility is a long-standing concern across the sciences~\cite{baker2016reproducibility}, and computer science is no exception~\cite{collberg2016repeatability}.
 Benchmarking is an essential part of developing and comparing SPARQL engines and federation algorithms.
 Benchmarks are standardized and reproducible scenarios that capture either realistic workloads or interesting choke points in query processing.
-For a benchmark to serve as a basis for comparison, it must be usable by a variety of independent implementations, a property we call the interoperability of the benchmark.
-A benchmark can only underwrite reproducible comparison if independent implementations can actually ingest and run it.
+For a benchmark to serve as a basis for comparison, independent implementations must be able to ingest both its data and the scenarios it prescribes, a property we call the interoperability of the benchmark.
 
-The quality of published \ac{RDF} is a studied concern: surveys organize it into taxonomies of quality dimensions, among them syntactic validity~\cite{Zaveri2015}, and large-scale empirical studies have measured how far published data deviates from the standards and cataloged the recurring errors~\cite{Hogan2010WeavingTP,hogan2012empirical}.
-Existing tooling addresses such defects at authoring time, where a language server flags syntax mistakes before publication~\cite{Vercruysse2025}, or at ingestion time, where LOD Laundromat republishes cleaned copies of existing datasets, but by exclusion, keeping only documents whose source URL parses under RFC~3986~\cite{ietf3986URI, Beek2014}.
+The quality of published \ac{RDF} data is a studied concern.
+The literature contains surveys that organize such concerns into taxonomies of quality dimensions, among them syntactic validity~\cite{Zaveri2015}.
+Large-scale empirical studies have in turn measured how far published data deviates from the standards, and cataloged the recurring errors~\cite{Hogan2010WeavingTP,hogan2012empirical}.
+Existing tooling addresses such defects at authoring time, where a language server flags syntax mistakes before publication~\cite{Vercruysse2025}, or at ingestion time, where tools such as LOD Laundromat~\cite{Beek2014} republish cleaned copies of existing datasets.
+The latter proceeds by exclusion, however, keeping only documents whose source URL parses under RFC~3986~\cite{ietf3986URI}.
 %Link-integrity maintenance, which mends broken or dangling references~\cite{regino2021link}, is orthogonal: it acts on what \acp{IRI} resolve to rather than on their form, and in SPARQL benchmarking neither the meaning of triples nor the dereferencing of their \acp{IRI} affects query results.
 
 This matters especially for a federated benchmark, whose datasets are distributed across multiple endpoints that may each run a different engine.
@@ -25,13 +27,14 @@ LargeRDFBench~\cite{saleem2018largerdfbench}, which extends the earlier FedBench
 More recent benchmarks such as FedShop~\cite{dang2023fedshop} instead generate synthetic sources to stress-test how federation engines scale with the number of endpoints, a concern orthogonal to the standards-conformance of real, published data that we address here.
 LargeRDFBench provides 13 real datasets, most of them interlinked, together with 32 queries and their expected results.
 Several of these datasets, however, deviate from the \ac{RDF} standard, so an engine that parses \ac{RDF} strictly cannot ingest them.
-This is not a flaw for client-side evaluation, since the data need only be loaded once into a hosting engine, and a lenient one will accept it and serve results through the SPARQL protocol, so the malformed data alone does not change the client's results.
-It nonetheless narrows the set of engines able to host the benchmark and rules out any that parse \ac{RDF} strictly, undermining interoperability.
+This is not harmless even for client-side evaluation, since we find the benchmark's expected results to depend on the engine chosen to host the data as well as on the federation semantics the client itself assumes.
+It also narrows the set of engines able to host the benchmark and rules out any that parse \ac{RDF} strictly, undermining interoperability.
 The expected results compound the problem, since they are published in a custom format that must be parsed with custom tooling, even though standard result formats already exist~\cite{sparql11resultsjson}.
 They also contain discrepancies with respect to the source datasets, introduced by the tooling that produced them.
 
-In this paper, we identify and categorize these standards violations and repair them with a reproducible pipeline, producing a standards-conformant edition of LargeRDFBench whose datasets all load under a strict \ac{RDF} parser and whose expected results are re-encoded in a standard format.
+In this paper, we identify and categorize these standards violations and repair them with a reproducible pipeline, producing a standards-conformant edition of LargeRDFBench whose datasets all load under a strict \ac{RDF} parser and whose expected results are re-encoded in a standard format, archived under a persistent identifier so that it can be cited and downloaded directly~\cite{tam2026lrbedition}.
 Running the modernized benchmark end-to-end in a federated engine, we validate the expected results against the source datasets and correct their discrepancies, backing each correction with a reproducible verification script.
-This validation also reveals a subtler threat to reproducibility, as the engine hosting the data can itself change the answers the benchmark returns, independently of the client-side federation algorithm under test.
+This validation also reveals a more subtle threat to reproducibility, as the engine hosting the data can itself change the answers the benchmark returns, independently of the client-side federation algorithm under test.
+It further shows that reproducing such results with an independent implementation is difficult, since FedQPL~\cite{Cheng2021}, the reference formalism for automatic source selection, is defined under set semantics and so leaves the real SPARQL execution of automatic source selection ambiguous.
 We take a first step by comparing \texttt{ASK}- and \texttt{COUNT}-based source selection in the FedX algorithm~\cite{schwarte2011fedx}, as implemented in the Comunica query engine~\cite{taelman_iswc_resources_comunica_2018}, over endpoints hosted by QLever~\cite{bast2017qlever}, a comparison not previously explored.
 Because endpoints implement \texttt{ASK} and \texttt{COUNT} differently, this evaluation raises, without settling, how the hosting engine shapes federated performance, a server-side view that current benchmarking overlooks and that the interoperable benchmark now makes possible.

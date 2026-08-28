@@ -5,7 +5,14 @@ Reproducibility is a cornerstone of science, and of benchmarking in particular, 
 Several of LargeRDFBench's datasets deviate from the \ac{RDF} standard and its expected results are distributed in an ad hoc format, so we repaired both with a deterministic, reproducible pipeline that yields standards-conformant datasets, their \ac{HDT} counterparts, and the expected results in the W3C SPARQL 1.1 Query Results JSON Format.
 We also validated end-to-end in a federated engine, correcting encoding discrepancies in the reference along the way.
 
-Because every conformant engine can now host the data, the edition supports reproducible cross-engine comparison.
-Our validation shows, however, that this reproducibility depends on the engine serving the data and not only on the client-side algorithm under test.
+Because every conformant engine can now host the data, the repaired benchmark supports reproducible cross-engine comparison.
+Reproducing the expected results nonetheless exposed three obstacles to it, of increasing depth.
+The first is the ingestion of strings, where, for example, trailing spaces kept by one tool and trimmed by another change which literals exist.
+This is trivial to resolve once noticed.
+The second is that an engine may materialize entailments as it ingests the data.
+Collapsing \texttt{xsd:float} and \texttt{xsd:double} into \texttt{xsd:decimal}, for example, can change the query results, including the multiplicity of the bag of solution mappings.
+The third is the absence of a fundamental definition, since for federated queries under automatic source selection no formalism describes what a SPARQL engine should compute.
+FedQPL~\cite{Cheng2021}, which formalizes the plans that automatic source selection produces, defines their execution over sets of solution mappings, whereas SPARQL evaluates under bag semantics.
+Extending FedQPL, or establishing another formal definition of federated queries with automatic source selection under bag semantics, is in our view an important open problem for reproducible federated evaluation.
 Our comparison of \texttt{ASK}- and \texttt{COUNT}-based source selection opens a further direction, as the strategy's cost varies significantly across queries and depends on how the hosting engine evaluates \texttt{ASK} and \texttt{COUNT}, a real-world constraint on federation that current benchmarking practice overlooks.
 We leave a systematic multi-engine evaluation to future work.

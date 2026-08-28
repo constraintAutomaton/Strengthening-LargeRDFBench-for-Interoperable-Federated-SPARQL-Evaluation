@@ -10,7 +10,8 @@ We also drop the original results' unbound placeholder, an unbound \texttt{OPTIO
 We verify that each cleaned dataset preserves the triple count of its original and that each converted result set preserves its number of solutions, emitting a CSV report of this check.
 We then convert each dataset into \ac{HDT}~\cite{FERNANDEZ201322}, a compressed RDF format, and run simple \texttt{ASK} queries over it with the Comunica SPARQL engine~\cite{taelman_iswc_resources_comunica_2018}, which parses only valid RDF and so gives an engine-level check that the data loads.
 The pipeline thus yields the standards-conformant datasets, their \ac{HDT} counterparts, and the expected results in SPARQL Results JSON.
-To make the interoperable edition directly available to the community, we have opened a pull request contributing these artifacts to the official LargeRDFBench repository.\footnote{\url{https://github.com/dice-group/LargeRDFBench/pull/4}}
+To make the interoperable edition directly available to the community, we archive it on Zenodo under a persistent identifier~\cite{tam2026lrbedition}: the repaired datasets, their \ac{HDT} indexes, the queries and the expected results can be downloaded and used as they are, without running the pipeline.
+We have additionally opened a pull request contributing these artifacts to the official LargeRDFBench repository.\footnote{\url{https://github.com/dice-group/LargeRDFBench/pull/4}}
 
 
 \subsection{Taxonomy of the Repairs}
@@ -19,7 +20,8 @@ We group the standards violations we found into three classes according to the p
 The pipeline additionally applies two repairs for tooling compatibility rather than standards conformance.
 It replaces NUL bytes with spaces, which HDT's \texttt{rdf2hdt}~\cite{hdtcpp} cannot ingest, and converts single-quoted RDF/XML attributes to double quotes, which some parsers reject.
 Both are omitted from Table~\ref{tab:fixes}.}
-We illustrate each repair below with a representative example, while Table~\ref{tab:fixes} records how often each fired across the benchmark's datasets.
+We present the three classes in turn, giving for each the repairs it requires and a representative example.
+Table~\ref{tab:fixes} reports how often each repair fired across the benchmark's datasets.
 
 \input{table/fix_summary}
 
@@ -30,7 +32,8 @@ A term written without a scheme is made absolute against the dataset's base \ac{
 Leading and trailing spaces are stripped.
 
 The second class concerns string literals that a strict parser rejects.
-A literal broken across physical lines is rejoined with the breaks escaped as \texttt{\textbackslash n}, since a quoted literal may not contain a raw newline in either N-Triples~\cite{w3NTriples} or Turtle~\cite{w3Turtle}; a value spanning three lines, for example, becomes \texttt{"line one\textbackslash nline two\textbackslash nline three"}.
+A literal broken across physical lines is rejoined with the breaks escaped as \texttt{\textbackslash n}, since a quoted literal may not contain a raw newline in N-Triples~\cite{w3NTriples}; a value spanning three lines, for example, becomes \texttt{"line one\textbackslash nline two\textbackslash nline three"}.
+Turtle~\cite{w3Turtle} does admit raw newlines, but only inside a long string delimited by \texttt{"""}, a form N-Triples does not provide, so escaping is required for the serialization we produce.
 Both serializations also require every document to be encoded in UTF-8~\cite{w3NTriples,w3Turtle}, so a value that UTF-8 cannot express cannot appear in a conformant file.
 A character too large for a single UTF-16 code unit is represented as a surrogate pair, and some literals carry such a character as its two surrogate halves rather than as the character itself.
 Because UTF-8 cannot encode surrogates and requires them to be decoded to their character number first~\cite{ietf3629UTF8}, we recombine the halves; the pair \texttt{\textbackslash uD835\textbackslash uDFB1}, for example, becomes the single character U+1D7B1.

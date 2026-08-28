@@ -4,16 +4,24 @@
 The primary purpose of this experiment is to validate the integrity of the modernized benchmark.\footnote{The experiment is reproducible and open source: \url{https://github.com/shape-federated-queries/ask-count-fedx-large-rdf-bench}}
 We then illustrate the kind of investigation the now standards-conformant, interoperable benchmark makes possible.
 As an example, we compare the \texttt{ASK}- and \texttt{COUNT}-based source-selection strategies of the FedX algorithm~\cite{schwarte2011fedx}.
-The \texttt{COUNT} variant replaces FedX's \texttt{ASK} probes with \texttt{COUNT} queries, so that source selection simultaneously discovers cardinality information useful for query planning.
+FedX determines which endpoints can contribute to a triple pattern by sending each of them an \texttt{ASK} query, which an endpoint may answer as soon as it finds one match.
+The \texttt{COUNT} variant replaces these probes with \texttt{COUNT} queries, which ask the same question but require the endpoint to enumerate every match, so they cost more and return in exchange the cardinality that the planner would otherwise have to estimate.
 We report \emph{query planning time} and \emph{query execution time} for both variants.
+Throughout, we refer to queries by their LargeRDFBench identifiers~\cite{saleem2018largerdfbench}, where each query can be consulted in full.
 
-We ran the experiment on 14 machines, one for each of the 13 endpoints and one client.
-Every endpoint is served by QLever~\cite{bast2017qlever}, and the client evaluates the full query suite with the FedX algorithm as implemented in Comunica~\cite{taelman_iswc_resources_comunica_2018}, under both its \texttt{ASK}- and \texttt{COUNT}-based source selection.
+We ran the experiment on 14 machines of the imec Virtual Wall testbed, one for each of the 13 endpoints and one client, communicating over the testbed's dedicated internal network, so the times we report are those of a local-area deployment rather than of the public Web.
+Every endpoint is served by QLever~\cite{bast2017qlever}, and the client evaluates the queries with the FedX algorithm as implemented in Comunica~\cite{taelman_iswc_resources_comunica_2018}, under both its \texttt{ASK}- and \texttt{COUNT}-based source selection.
 Each machine has the same specification: two hexa-core Intel Xeon E5645 (2.4\,GHz) CPUs, 24\,GB of RAM, and Ubuntu 20.04 LTS 64-bit.
+We did not run the full query suite, but its simple (S) and complex (C) queries, and allowed each 30 minutes before aborting it.
 
 We corrected a pervasive defect in the original expected results, accented characters recorded as \texttt{?} or the replacement character U+FFFD, verified against the source data.
 With this correction applied, every query our engine answers matches the expected results, except three: S7, C8 and C7.
-For S7, the triple pattern binding \texttt{"California"} is answered by both NYT and GeoNames; the original results appear to join these into one solution, whereas the FedQPL definition prescribes a union of solution mappings when two sources answer the same triple pattern~\cite{cheng2020fedqpl}, hence the two solutions our engine returns.
+For S7, the triple pattern binding \texttt{"California"} is answered by both NYT and GeoNames; the original results record a single solution, whereas our engine returns two.
+FedQPL~\cite{Cheng2021}, the reference formalism for the plans that automatic source selection produces, requires the answer to a query over a federation to be the one obtained by evaluating it over the set union of the data of all federation members~\cite[Def.~3]{Cheng2021}, that is, over the federation seen as a single knowledge graph, in which the triple asserted by both sources occurs once.
+Its operators are correspondingly defined over sets of solution mappings~\cite[Def.~6]{Cheng2021}, whereas SPARQL operators evaluate under bag semantics, and the formalism proposes no union operator for SPARQL that would bridge the two, so how to reconcile them is not settled.
+A bag semantics for FedQPL is left to future work, and no published extension develops one.
+The consequence for reproducibility is significant: no established formalism describes how federated SPARQL queries under automatic source selection are actually executed, so the answers a conforming engine returns cannot be checked against any definition.
+We therefore report the discrepancy rather than resolve it.
 For C8, the source data contains the author label both with and without a trailing space (\texttt{"Eyal Oren "} and \texttt{"Eyal Oren"}), so our engine returns both where the original results kept only the trimmed form.
 For C7, the difference comes from the hosting engine, not the answer set: QLever canonicalizes numeric literals, casting \texttt{xsd:float} and \texttt{xsd:double} to \texttt{xsd:decimal}.
 SPARQL evaluates over RDF terms, and the dataset asserts the coordinate under both \texttt{xsd:float} and \texttt{xsd:double}, whose use in RDF is itself a documented source of data-quality problems~\cite{keil2022floating}.
