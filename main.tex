@@ -20,6 +20,13 @@
 
 \input{reviewing}
 
+%% arXiv preprint switch. Off by default.
+%% Enable either by uncommenting the line below, or without editing this file with
+%%   latexmk -pdf -usepretex='\def\arxivversion{}' main.tex
+%\def\arxivversion{}
+\newif\ifarxiv
+\ifdefined\arxivversion\arxivtrue\else\arxivfalse\fi
+
 \begin{document}
 
 %%
@@ -30,8 +37,12 @@
 
 %%
 %% Conference information.
+\ifarxiv
+\conference{}
+\else
 \conference{DMKG 2026: 2nd International Workshop on Data Management for Knowledge Graphs,
 	October 25--26, 2026, co-located with ISWC 2026, Bari, Italy}
+\fi
 
 %%
 %% Title.
