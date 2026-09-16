@@ -10,7 +10,7 @@
     table.hline(),
     table.cell(colspan: 3)[_IRI_],
     [#h(1em) Illegal characters percent-encoded], [93,587], [7],
-    [#h(1em) Relative CURIE-like terms absolutised], [1,145], [1],
+    [#h(1em) Relative CURIE-like terms absolutized], [1,145], [1],
     [#h(1em) Invalid authority colons encoded], [1,147], [2],
     [#h(1em) Leading/trailing spaces stripped], [76], [3],
     table.hline(),

@@ -15,7 +15,7 @@
     [#h(1em) Illegal characters percent-encoded],
       [#rw("ATFIP1")#hl("[")#rw("V")#hl("]")],
       [#rw("ATFIP1%5BV%5D")],
-    [#h(1em) Relative CURIE-like terms absolutised],
+    [#h(1em) Relative CURIE-like terms absolutized],
       [#hl("<bio2rdf_dataset:")#rw("...>")],
       [#rw("<http://bio2rdf_dataset%3A...>")],
     [#h(1em) Invalid authority colons encoded],

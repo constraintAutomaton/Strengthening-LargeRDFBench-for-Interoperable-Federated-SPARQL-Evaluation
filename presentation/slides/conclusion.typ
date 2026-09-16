@@ -7,4 +7,4 @@
   - RDF-compliant artifact
   - Consistent literal handling
   - Declarative, mandatory entailment regime
-  - Bag-set formalism for source selection
+  - Bag-set formalism for federated queries with automatic source selection
